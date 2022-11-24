@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:movie/models/detail_movie.dart';
+import 'package:movie/views/home_page.dart';
 
 void main() {
   runApp(MaterialApp(home: Movie()));
@@ -22,41 +23,7 @@ class _MovieState extends State<Movie> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              '$nilai',
-              style: TextStyle(fontSize: 50),
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    nilai += 1;
-                  });
-                },
-                child: Text('Increment')),
-            ElevatedButton(
-                onPressed: () {
-                  getHttp();
-                },
-                child: Text('Ambil Data')),
-            Text(detailMovie != null
-                ? 'Judul Movie : ${detailMovie!.title}'
-                : ''),
-            Text(detailMovie != null
-                ? 'Overview : ${detailMovie!.overview}'
-                : ''),
-            Text(detailMovie != null
-                ? 'Release Date : ${detailMovie!.releaseDate}'
-                : '')
-          ],
-        ),
-      ),
-    );
+    return HomePage();
   }
 
   void getHttp() async {
