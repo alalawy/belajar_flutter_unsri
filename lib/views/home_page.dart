@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:movie/models/list_movie.dart';
+import 'package:movie/services/MovieListService.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  ListMovie? listMovie;
+
+  @override
+  void initState() {
+    Future.delayed(const Duration(milliseconds: 500), () async {
+      listMovie = await movieListService.getMovieList();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +68,8 @@ class HomePage extends StatelessWidget {
                   height: 350,
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
+                      itemCount:
+                          listMovie != null ? listMovie!.results!.length : 0,
                       itemBuilder: (context, index) => Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -64,13 +83,16 @@ class HomePage extends StatelessWidget {
                                       image: DecorationImage(
                                           fit: BoxFit.cover,
                                           image: Image.network(
-                                                  'https://m.media-amazon.com/images/M/MV5BMjI0NmFkYzEtNzU2YS00NTg5LWIwYmMtNmQ1MTU0OGJjOTMxXkEyXkFqcGdeQXVyMjMxOTE0ODA@._V1_.jpg')
+                                                  'https://www.themoviedb.org/t/p/w600_and_h900_bestv2${listMovie!.results![index].posterPath}')
                                               .image)),
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 20),
-                                child: Text('Fast & Furious 6'),
+                                child: Text(
+                                  '${listMovie!.results![index].title}',
+                                  style: TextStyle(fontSize: 20),
+                                ),
                               )
                             ],
                           )),

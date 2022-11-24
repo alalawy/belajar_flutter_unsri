@@ -25,17 +25,4 @@ class _MovieState extends State<Movie> {
   Widget build(BuildContext context) {
     return HomePage();
   }
-
-  void getHttp() async {
-    try {
-      var data = await Dio().get(
-          'https://api.themoviedb.org/3/movie/550?api_key=ad70b1a0982af1b93f36caa498f9bf91');
-
-      setState(() {
-        detailMovie = DetailMovie.fromJson(jsonDecode(data.toString()));
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
 }
