@@ -56,39 +56,48 @@ class HomePage extends StatelessWidget {
                 child: SizedBox(
                   height: 350,
                   child: Obx(
-                    () => ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: movies.listMovie()!.length,
-                        itemBuilder: (context, index) => Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                InkWell(
-                                  onTap: () => Get.to(() => DetailMovie()),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 25),
-                                    child: Container(
-                                      width: 250,
-                                      height: 300,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: Image.network(
-                                                      'https://www.themoviedb.org/t/p/w600_and_h900_bestv2${movies.listMovie()![index].posterPath}')
-                                                  .image)),
+                    () => movies.listMovie() == null
+                        ? Center(
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        : ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: movies.listMovie()!.length,
+                            itemBuilder: (context, index) => Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    InkWell(
+                                      onTap: () => Get.to(() => DetailMovie()),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 25),
+                                        child: Container(
+                                          width: 250,
+                                          height: 300,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              image: DecorationImage(
+                                                  fit: BoxFit.cover,
+                                                  image: Image.network(
+                                                          'https://www.themoviedb.org/t/p/w600_and_h900_bestv2${movies.listMovie()![index].posterPath}')
+                                                      .image)),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 20),
-                                  child: Text(
-                                    '${movies.listMovie()![index].title}',
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                )
-                              ],
-                            )),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 20),
+                                      child: Text(
+                                        '${movies.listMovie()![index].title}',
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    )
+                                  ],
+                                )),
                   ),
                 ),
               ),
@@ -109,52 +118,60 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              Obx((() => ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: movies.listMoviePopular()!.length,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 25),
-                            child: Container(
-                              width: 100,
-                              height: 130,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: Image.network(
-                                              'https://www.themoviedb.org/t/p/w600_and_h900_bestv2${movies.listMoviePopular()![index].posterPath}')
-                                          .image)),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 20),
-                            child: Column(
-                              children: [
-                                Text(
-                                  '${movies.listMoviePopular()![index].title}',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  'Action, Comedy, Thriller',
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
+              Obx((() => movies.listMoviePopular() == null
+                  ? Center(
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        child: CircularProgressIndicator(),
                       ),
-                    );
-                  })))
+                    )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: movies.listMoviePopular()!.length,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 25),
+                                child: Container(
+                                  width: 100,
+                                  height: 130,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: Image.network(
+                                                  'https://www.themoviedb.org/t/p/w600_and_h900_bestv2${movies.listMoviePopular()![index].posterPath}')
+                                              .image)),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      '${movies.listMoviePopular()![index].title}',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      'Action, Comedy, Thriller',
+                                      style: TextStyle(
+                                          fontSize: 14, color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      })))
             ],
           ),
         ),
