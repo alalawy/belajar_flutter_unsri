@@ -1,26 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:get/get.dart';
+import 'package:movie/controllers/home_controller.dart';
 import 'package:movie/models/list_movie.dart';
 import 'package:movie/services/MovieListService.dart';
+import 'package:movie/views/detail_movie.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  ListMovie? listMovie;
-
-  @override
-  void initState() {
-    Future.delayed(const Duration(milliseconds: 500), () async {
-      listMovie = await movieListService.getMovieList();
-    });
-    super.initState();
-  }
+class HomePage extends StatelessWidget {
+  HomePage({super.key});
+  var movies = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -66,36 +55,41 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.only(top: 30),
                 child: SizedBox(
                   height: 350,
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount:
-                          listMovie != null ? listMovie!.results!.length : 0,
-                      itemBuilder: (context, index) => Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 25),
-                                child: Container(
-                                  width: 250,
-                                  height: 300,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: Image.network(
-                                                  'https://www.themoviedb.org/t/p/w600_and_h900_bestv2${listMovie!.results![index].posterPath}')
-                                              .image)),
+                  child: Obx(
+                    () => ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: movies.listMovie()!.length,
+                        itemBuilder: (context, index) => Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                InkWell(
+                                  onTap: () => Get.to(() => DetailMovie()),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 25),
+                                    child: Container(
+                                      width: 250,
+                                      height: 300,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: Image.network(
+                                                      'https://www.themoviedb.org/t/p/w600_and_h900_bestv2${movies.listMovie()![index].posterPath}')
+                                                  .image)),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: Text(
-                                  '${listMovie!.results![index].title}',
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                              )
-                            ],
-                          )),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20),
+                                  child: Text(
+                                    '${movies.listMovie()![index].title}',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                )
+                              ],
+                            )),
+                  ),
                 ),
               ),
               Padding(
@@ -115,82 +109,52 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 25),
-                      child: Container(
-                        width: 100,
-                        height: 130,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: Image.network(
-                                        'https://m.media-amazon.com/images/M/MV5BMjI0NmFkYzEtNzU2YS00NTg5LWIwYmMtNmQ1MTU0OGJjOTMxXkEyXkFqcGdeQXVyMjMxOTE0ODA@._V1_.jpg')
-                                    .image)),
-                      ),
-                    ),
-                    Padding(
+              Obx((() => ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: movies.listMoviePopular()!.length,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return Padding(
                       padding: const EdgeInsets.only(top: 20),
-                      child: Column(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Fast & Furious 6',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 25),
+                            child: Container(
+                              width: 100,
+                              height: 130,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: Image.network(
+                                              'https://www.themoviedb.org/t/p/w600_and_h900_bestv2${movies.listMoviePopular()![index].posterPath}')
+                                          .image)),
+                            ),
                           ),
-                          Text(
-                            'Action, Comedy, Thriller',
-                            style: TextStyle(fontSize: 14, color: Colors.grey),
-                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: Column(
+                              children: [
+                                Text(
+                                  '${movies.listMoviePopular()![index].title}',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'Action, Comedy, Thriller',
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 25),
-                      child: Container(
-                        width: 100,
-                        height: 130,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: Image.network(
-                                        'https://m.media-amazon.com/images/M/MV5BMjI0NmFkYzEtNzU2YS00NTg5LWIwYmMtNmQ1MTU0OGJjOTMxXkEyXkFqcGdeQXVyMjMxOTE0ODA@._V1_.jpg')
-                                    .image)),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Fast & Furious 6',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            'Action, Comedy, Thriller',
-                            style: TextStyle(fontSize: 14, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              )
+                    );
+                  })))
             ],
           ),
         ),
